@@ -47,7 +47,7 @@ class UpsampleBlock(nn.Module):
     
 
 class Down(nn.Module):
-    def __init__(self, input_c: int, out_c: int, time_emb_c: int = 32, 
+    def __init__(self, input_c: int, out_c: int, time_emb_c: int = 64, 
                  block = BasicBlock, pool = F.max_pool2d) -> None:
         
         super().__init__()
@@ -63,7 +63,7 @@ class Down(nn.Module):
     
 
 class Up(nn.Module):
-    def __init__(self, input_c: int, skip_c: int, out_c: int, time_emb_c: int = 32, 
+    def __init__(self, input_c: int, skip_c: int, out_c: int, time_emb_c: int = 64, 
                        up_sample = UpsampleBlock, block = BasicBlock) -> None:
         
         super().__init__()
@@ -81,7 +81,7 @@ class Up(nn.Module):
     
 
 class TimeEncoder(nn.Module):
-    def __init__(self, input_c: int = 16, emb_c: int = 32, n_layers: int = 4) -> None:
+    def __init__(self, input_c: int = 16, emb_c: int = 64, n_layers: int = 4) -> None:
         super().__init__()
 
         self.conv = nn.Sequential(
