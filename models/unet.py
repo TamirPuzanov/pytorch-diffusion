@@ -18,6 +18,12 @@ class BasicBlock(nn.Module):
 
             nn.Conv2d(out_c, out_c, 3, stride=1, padding=1),
             nn.LeakyReLU(), nn.BatchNorm2d(out_c),
+
+            nn.Conv2d(out_c, out_c, 3, stride=1, padding=1),
+            nn.LeakyReLU(), nn.BatchNorm2d(out_c),
+
+            nn.Conv2d(out_c, out_c, 3, stride=1, padding=1),
+            nn.LeakyReLU(), nn.BatchNorm2d(out_c),
         )
     
     def forward(self, x):
@@ -30,6 +36,9 @@ class UpsampleBlock(nn.Module):
 
         self.main = nn.Sequential(
             nn.ConvTranspose2d(input_c, out_c, 4, stride=2, padding=1),
+            nn.LeakyReLU(), nn.BatchNorm2d(out_c),
+
+            nn.Conv2d(out_c, out_c, 3, stride=1, padding=1),
             nn.LeakyReLU(), nn.BatchNorm2d(out_c),
         )
     
@@ -77,13 +86,19 @@ class TimeEncoder(nn.Module):
 
         self.conv = nn.Sequential(
             nn.Conv2d(input_c, emb_c, 3, stride=1, padding=1),
-            nn.SiLU(), nn.BatchNorm2d(emb_c)
+            nn.LeakyReLU(), nn.BatchNorm2d(emb_c)
         )
 
         self.main = nn.ModuleList([
             nn.Sequential(
                 nn.ConvTranspose2d(emb_c, emb_c, 4, stride=2, padding=1),
-                nn.SiLU(), nn.BatchNorm2d(emb_c)
+                nn.LeakyReLU(), nn.BatchNorm2d(emb_c),
+
+                nn.Conv2d(emb_c, emb_c, 3, stride=1, padding=1),
+                nn.LeakyReLU(), nn.BatchNorm2d(emb_c),
+
+                nn.Conv2d(emb_c, emb_c, 3, stride=1, padding=1),
+                nn.LeakyReLU(), nn.BatchNorm2d(emb_c)
             )
 
             for _ in range(n_layers)
@@ -110,8 +125,8 @@ class Unet(nn.Module):
                        pool                  = F.max_pool2d,
                        time_emb              = SinusoidalPositionEmbeddings,
                        time_encoder          = TimeEncoder,
-                       time_encoder_c        = 32,
-                       fn                    = torch.tanh ) -> None:
+                       time_encoder_c        = 64,
+                       fn                    = lambda x: x ) -> None:
         
         super().__init__()
 
