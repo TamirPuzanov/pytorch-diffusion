@@ -29,7 +29,7 @@ class Diffusion:
 
         t = torch.randint(0, self.n_steps, (x0.shape[0],), device=x0.device)
 
-        x      = self.forward_diffusion_t_batch(x, t)
+        x      = self.forward_diffusion_t_batch(x0, t)
         x, eps = self.forward_diffusion_batch(x, t)
 
         out = self.model(x)
